@@ -26,7 +26,6 @@ export default function DetailsPage() {
       .get("https://swapi.dev/api")
       .then((res) => {
         setoptions(res.data);
-        setselectedOption(Object.keys(res.data)[0]);
       })
       .catch((error) => {
         console.log(error);
@@ -36,6 +35,12 @@ export default function DetailsPage() {
   useEffect(() => {
     getOptionsList();
   }, []);
+
+  useEffect(() => {
+    if (options) {
+      setselectedOption(Object.keys(options)[0]);
+    }
+  }, [options]);
 
   const handleDropdownSelection = () => {
     if (options) {
@@ -53,7 +58,7 @@ export default function DetailsPage() {
     <Grid>
       <Autocomplete
         options={options ? Object.keys(options) : []}
-        value={selectedOption}
+        value={options ? Object.keys(options)[0] : []}
         renderInput={(params) => (
           <TextField {...params} label="Select Option" />
         )}
