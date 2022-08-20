@@ -43,7 +43,7 @@
 }
 
 .detailstable {
-  width: 90%;
+  width: 100%;
   border: 1px solid;
   border-collapse: collapse;
   margin: calc(1px + 1vmin);
@@ -52,4 +52,8 @@
 .tableCell {
   border: 1px solid;
   padding: calc(0.5px + 1vmin);
+}
+
+.pageNo {
+  margin: 0 8px;
 }
