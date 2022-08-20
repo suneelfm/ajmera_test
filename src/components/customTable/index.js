@@ -1,24 +1,58 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Grid } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 export default function CustomTable({ rows, headers, onClickRow }) {
   const [recordsPerPage, setrecordsPerPage] = useState("5");
+  const [tableData, settableData] = useState([]);
   const [records, setrecords] = useState([]);
   const [pageNo, setpageNo] = useState(1);
+  const [searchText, setsearchText] = useState("");
 
   useEffect(() => {
-    const rowsCopy = [...rows];
+    settableData(rows);
+  }, [rows]);
+
+  useEffect(() => {
+    const rowsCopy = [...tableData];
     setrecords(
       rowsCopy.splice(
         parseInt(recordsPerPage) * pageNo - parseInt(recordsPerPage),
         parseInt(recordsPerPage) * pageNo
       )
     );
-  }, [rows, recordsPerPage, pageNo]);
+  }, [tableData, recordsPerPage, pageNo]);
+
+  const getSearchData = () => {
+    const rowsCopy = [...rows];
+    const filtered = [];
+    rowsCopy?.forEach((item) => {
+      const matched = headers?.filter((dtl) =>
+        item[dtl?.id]?.toLowerCase()?.includes(searchText.toLowerCase())
+      );
+      if (matched?.length > 0) {
+        filtered.push(item);
+      }
+    });
+
+    settableData(filtered);
+  };
+
+  useEffect(() => {
+    getSearchData();
+  }, [searchText]);
 
   return (
     <Grid container>
+      <Grid container px={2} justifyContent={"flex-end"}>
+        <TextField
+          placeholder="Search"
+          value={searchText}
+          onChange={(e) => {
+            setsearchText(e.target.value);
+          }}
+        />
+      </Grid>
       <table className="detailstable">
         <thead>
           <tr>
@@ -31,7 +65,11 @@ export default function CustomTable({ rows, headers, onClickRow }) {
         </thead>
         <tbody>
           {records?.map((item, index) => (
-            <tr key={index} onClick={() => onClickRow(item)}>
+            <tr
+              key={index}
+              onClick={() => onClickRow(item)}
+              style={{ cursor: "pointer" }}
+            >
               {headers?.map((header, ind) => (
                 <td key={ind} className="tableCell">
                   {item[header?.id]}
